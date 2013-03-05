@@ -7,10 +7,10 @@ object Main {
     println("Total functional programming in Scala using macros:")
 
     // 1
-    println(total(Succ(Zero)))
+//    println(total(Succ(Zero)))
 
     // 2
-    println(total(Succ(Succ(Zero))))
+//    println(total(Succ(Succ(Zero))))
 
     def x[A]: A = x
     // Doesn't compile
@@ -42,7 +42,7 @@ object Main {
     })
 
     //Goedel.run(
-      Goedel.compose(
+/*      Goedel.compose(
         Goedel.pair(
           Goedel.id,
           Goedel.curry(
@@ -149,7 +149,7 @@ object Main {
             Goedel.eval
           )
         )
-      )
+      ) */
     //)
   }
 }

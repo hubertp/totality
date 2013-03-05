@@ -72,14 +72,19 @@ class Elaborate[C <: Context](val c: C) extends QuoteFind[C] with Environment[C]
     } yield compose(pair(id, tn), iter(tz, ts))
 
     case (Let(va, value, body), typ2) => for {
-      (t1, typ1) <- synth(value)
-      t2 <- withHyp((va, typ1), check(body, typ2))
-    } yield compose(pair(id, t1), t2)
+     res1 <- synth(value)
+     res2 <- withHyp((va, res1._2), check(body, typ2))
+    } yield compose(pair(id, res1._1), res2)
+//      (t1, typ1) <- synth(value)
+//      t2 <- withHyp((va, typ1), check(body, typ2))
+//    } yield compose(pair(id, t1), t2)
 
     case (_, _) => for {
-      (t, typ2) <- synth(term)
-      _ = assert(typ == typ2)
-    } yield t
+      res <- synth(term)
+      _ = assert(typ == res._2)
+//      (t, typ2) <- synth(term)
+//      _ = assert(typ == typ2)
+    } yield res._1 //t
   }
 
   def synth(term: Term): EnvResult[(c.Tree, Typ)] = term match {
@@ -102,9 +107,11 @@ class Elaborate[C <: Context](val c: C) extends QuoteFind[C] with Environment[C]
       (tt, Prod(_, typ2)) = termSynth
     } yield (compose(tt, snd), typ2)
     case Let(va, value, body) => for {
-      (t1, typ1) <- synth(value)
-      (t2, typ2) <- withHyp((va, typ1), synth(body))
-    } yield (compose(pair(id, t1), t2), typ2)
+      res1 <- synth(value)
+      res2 <- withHyp((va, res1._2), synth(body))
+      //(t1, typ1) <- synth(value)
+      //(t2, typ2) <- withHyp((va, typ1), synth(body))
+    } yield (compose(pair(id, res1._1), res2._1), res2._2)//(compose(pair(id, t1), t2), typ2)
     case Ascription(term, typ) => for {
       t <- check(term, typ)
     } yield (t, typ)
